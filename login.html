@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+  <title>ISS Opportunity Management — Sign In</title>
+  <style>
+    :root {
+      --primary: #1A8BB5;
+      --primary-dark: #0D3347;
+      --accent: #B11C2C;
+      --accent-dark: #8B1520;
+      --dark: #0D3347;
+      --gray-100: #F2F6F9;
+      --gray-200: #DDE5EC;
+      --gray-400: #8FA5B5;
+      --gray-500: #5C7A8C;
+      --gray-700: #2C4A5C;
+      --gray-900: #0D1F2A;
+      --white: #ffffff;
+      --shadow-lg: 0 20px 40px rgba(13,51,71,0.18);
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html, body { height: 100%; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+    /* ── Layout ────────────────────────────────── */
+    .page { display: flex; min-height: 100vh; }
+
+    /* Left panel */
+    .panel-left {
+      flex: 1;
+      background: var(--dark);
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      padding: 48px 56px;
+      position: relative;
+      overflow: hidden;
+    }
+    .panel-left::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      background:
+        radial-gradient(ellipse at 20% 20%, rgba(177,28,44,0.25) 0%, transparent 55%),
+        radial-gradient(ellipse at 80% 80%, rgba(26,79,107,0.35) 0%, transparent 55%);
+      pointer-events: none;
+    }
+    .left-logo { position: relative; z-index: 1; }
+    .left-logo img { height: 40px; filter: brightness(0) invert(1); display: block; }
+    .left-logo .logo-fallback {
+      display: flex; align-items: center; gap: 12px;
+    }
+    .left-logo .logo-fallback svg { flex-shrink: 0; }
+    .left-logo .logo-fallback span {
+      color: white; font-size: 17px; font-weight: 700; letter-spacing: -0.3px;
+    }
+    .left-hero { position: relative; z-index: 1; }
+    .left-hero h1 {
+      color: white;
+      font-size: clamp(28px, 4vw, 42px);
+      font-weight: 800;
+      line-height: 1.2;
+      margin-bottom: 16px;
+      letter-spacing: -0.5px;
+    }
+    .left-hero h1 span { color: #e87b87; }
+    .left-hero p {
+      color: rgba(255,255,255,0.6);
+      font-size: 16px;
+      line-height: 1.6;
+      max-width: 380px;
+    }
+    .left-stats {
+      position: relative; z-index: 1;
+      display: flex; gap: 32px;
+    }
+    .stat { }
+    .stat-value { color: white; font-size: 26px; font-weight: 800; line-height: 1; }
+    .stat-label { color: rgba(255,255,255,0.5); font-size: 12px; margin-top: 4px; }
+    .accent-bar {
+      width: 48px; height: 4px; background: var(--accent); border-radius: 2px; margin-bottom: 32px;
+    }
+
+    /* Right panel */
+    .panel-right {
+      width: 460px;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 48px 48px;
+    }
+    .sign-in-label {
+      font-size: 13px; font-weight: 700; text-transform: uppercase;
+      letter-spacing: 1px; color: var(--accent); margin-bottom: 10px;
+    }
+    .sign-in-title {
+      font-size: 28px; font-weight: 800; color: var(--gray-900);
+      margin-bottom: 6px; letter-spacing: -0.5px;
+    }
+    .sign-in-sub { font-size: 14px; color: var(--gray-500); margin-bottom: 36px; }
+
+    .form-group { margin-bottom: 20px; }
+    .form-label {
+      display: block; font-size: 13px; font-weight: 600;
+      color: var(--gray-700); margin-bottom: 7px;
+    }
+    .form-control {
+      width: 100%; padding: 12px 14px;
+      border: 1.5px solid var(--gray-200); border-radius: 8px;
+      font-size: 15px; color: var(--gray-900);
+      transition: border-color 0.2s, box-shadow 0.2s;
+      font-family: inherit;
+    }
+    .form-control:focus {
+      outline: none; border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(26,79,107,0.1);
+    }
+    .form-control.error { border-color: var(--accent); }
+    .input-wrap { position: relative; }
+    .input-icon {
+      position: absolute; left: 14px; top: 50%;
+      transform: translateY(-50%); font-size: 16px;
+      pointer-events: none;
+    }
+    .input-wrap .form-control { padding-left: 40px; }
+    .toggle-pw {
+      position: absolute; right: 14px; top: 50%; transform: translateY(-50%);
+      background: none; border: none; cursor: pointer; font-size: 16px;
+      color: var(--gray-400); padding: 0;
+    }
+    .toggle-pw:hover { color: var(--gray-700); }
+
+    .form-row { display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px; }
+    .remember { display: flex; align-items: center; gap: 8px; cursor: pointer; }
+    .remember input[type=checkbox] { width: 16px; height: 16px; accent-color: var(--primary); cursor: pointer; }
+    .remember span { font-size: 13px; color: var(--gray-600); }
+    .forgot { font-size: 13px; color: var(--primary); font-weight: 600; text-decoration: none; cursor: pointer; }
+    .forgot:hover { color: var(--accent); }
+
+    .btn-signin {
+      width: 100%; background: var(--accent); color: white;
+      padding: 14px; border: none; border-radius: 8px;
+      font-size: 15px; font-weight: 700; cursor: pointer;
+      transition: background 0.2s, transform 0.1s;
+      font-family: inherit;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+    }
+    .btn-signin:hover { background: var(--accent-dark); }
+    .btn-signin:active { transform: scale(0.99); }
+    .btn-signin:disabled { background: var(--gray-400); cursor: not-allowed; }
+
+    .error-banner {
+      background: #fee2e2; border: 1px solid #fca5a5; border-radius: 8px;
+      padding: 12px 14px; font-size: 13px; color: #b91c1c; font-weight: 500;
+      display: none; align-items: center; gap: 8px; margin-bottom: 20px;
+    }
+    .error-banner.show { display: flex; }
+
+    .divider { height: 1px; background: var(--gray-200); margin: 28px 0; }
+    .footer-note { font-size: 12px; color: var(--gray-400); text-align: center; line-height: 1.6; }
+    .footer-note a { color: var(--primary); text-decoration: none; font-weight: 600; }
+
+    /* Mobile */
+    @media (max-width: 820px) {
+      .page { flex-direction: column; }
+      .panel-left {
+        padding: 32px 28px 36px;
+        min-height: auto;
+        flex: none;
+      }
+      .left-stats { display: none; }
+      .left-hero h1 { font-size: 24px; }
+      .left-hero p { font-size: 14px; }
+      .panel-right { width: 100%; padding: 36px 28px 48px; }
+    }
+    @media (max-width: 480px) {
+      .panel-left { padding: 24px 20px 28px; }
+      .panel-right { padding: 28px 20px 40px; }
+    }
+
+    /* Loading spinner */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(255,255,255,0.4);
+      border-top-color: white;
+      border-radius: 50%;
+      animation: spin 0.7s linear infinite;
+      display: none;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+  </style>
+</head>
+<body>
+<div class="page">
+
+  <!-- ── Left Panel ── -->
+  <div class="panel-left">
+    <!-- Logo -->
+    <div class="left-logo">
+      <div class="logo-fallback">
+        <svg width="40" height="40" viewBox="0 0 42 42" fill="none">
+          <path d="M21 3 A18 18 0 1 1 5.5 36" stroke="#B11C2C" stroke-width="5.5" stroke-linecap="round" fill="none"/>
+          <path d="M21 9.5 A11.5 11.5 0 1 1 9 32" stroke="#B11C2C" stroke-width="4.5" stroke-linecap="round" fill="none" opacity=".75"/>
+          <path d="M21 16 A5 5 0 1 1 16 26" stroke="#B11C2C" stroke-width="3.5" stroke-linecap="round" fill="none" opacity=".5"/>
+        </svg>
+        <span>Industrial Service Solutions®</span>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="left-hero">
+      <div class="accent-bar"></div>
+      <h1>Track every deal.<br/>Win <span>more business.</span></h1>
+      <p>The ISS Opportunity Manager gives your team a single place to manage your sales pipeline, track deal progress, and close more opportunities — from any device.</p>
+    </div>
+
+    <!-- Stats -->
+    <div class="left-stats">
+      <div class="stat">
+        <div class="stat-value">360°</div>
+        <div class="stat-label">Pipeline visibility</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">Real-time</div>
+        <div class="stat-label">Dashboard & KPIs</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">Mobile</div>
+        <div class="stat-label">First design</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── Right Panel ── -->
+  <div class="panel-right">
+    <div class="sign-in-label">Opportunity Manager</div>
+    <h2 class="sign-in-title">Welcome back</h2>
+    <p class="sign-in-sub">Sign in to access your pipeline</p>
+
+    <!-- Error banner -->
+    <div class="error-banner" id="error-banner">
+      <span>⚠️</span>
+      <span id="error-msg">Invalid email or password. Please try again.</span>
+    </div>
+
+    <form id="login-form" onsubmit="handleSignIn(event)">
+      <!-- Email -->
+      <div class="form-group">
+        <label class="form-label" for="email">Email address</label>
+        <div class="input-wrap">
+          <span class="input-icon">✉️</span>
+          <input type="email" class="form-control" id="email"
+                 placeholder="you@iss-na.com" autocomplete="email" required />
+        </div>
+      </div>
+
+      <!-- Password -->
+      <div class="form-group">
+        <label class="form-label" for="password">Password</label>
+        <div class="input-wrap">
+          <span class="input-icon">🔒</span>
+          <input type="password" class="form-control" id="password"
+                 placeholder="Enter your password" autocomplete="current-password" required />
+          <button type="button" class="toggle-pw" onclick="togglePassword()" id="pw-toggle" title="Show/hide password">👁</button>
+        </div>
+      </div>
+
+      <!-- Remember + Forgot -->
+      <div class="form-row">
+        <label class="remember">
+          <input type="checkbox" id="remember-me" />
+          <span>Keep me signed in</span>
+        </label>
+        <a class="forgot" onclick="showForgotMsg()">Forgot password?</a>
+      </div>
+
+      <!-- Submit -->
+      <button type="submit" class="btn-signin" id="signin-btn">
+        <span id="btn-label">Sign In</span>
+        <div class="spinner" id="spinner"></div>
+        <span id="btn-arrow">→</span>
+      </button>
+    </form>
+
+    <div class="divider"></div>
+    <p class="footer-note">
+      Don't have an account? Contact your system administrator.<br/>
+      <a onclick="showAdminHint()">Admin setup →</a>
+    </p>
+  </div>
+</div>
+
+<script>
+// ================================================================
+// USER ACCOUNTS — FALLBACK (used when SharePoint is not configured)
+// IT administrators: add / remove users in this USERS array.
+// When the SharePoint "Validate User" flow is configured, this
+// list is used only as a local fallback if the API is unreachable.
+// ================================================================
+const USERS = [
+  {
+    email:        'admin@iss-na.com',
+    password:     'Admin2024!',
+    firstName:    'Admin',
+    lastName:     'User',
+    title:        'System Administrator',
+    businessUnit: 'Corporate',
+    region:       'National'
+  },
+  {
+    email:        'matt.sullivan@mshs.com',
+    password:     'ISS2024!',
+    firstName:    'Matt',
+    lastName:     'Sullivan',
+    title:        'Account Manager',
+    businessUnit: 'MSHS',
+    region:       'Southeast'
+  }
+  // Add more fallback users here following the same format
+];
+
+// Target app page (must be in the same folder)
+const APP_PAGE = 'iss-opportunity-manager.html';
+
+// ================================================================
+// SHAREPOINT AUTH — reads endpoint from iss_api_config in localStorage
+// ================================================================
+function getValidateUserUrl() {
+  try {
+    const cfg = JSON.parse(localStorage.getItem('iss_api_config') || '{}');
+    return cfg.validateUser || '';
+  } catch(e) { return ''; }
+}
+
+async function validateUserViaSharePoint(email, password) {
+  const url = getValidateUserUrl();
+  if (!url) return null;  // SharePoint not configured
+  try {
+    const r = await fetch(url, {
+      method: 'POST', mode: 'cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ email, password })
+    });
+    if (!r.ok) return null;
+    const data = await r.json();
+    if (data.valid && data.user) return data.user;
+    return false;  // false = wrong credentials (API responded but invalid)
+  } catch(e) {
+    console.error('[ISS] validateUser API failed:', e);
+    return null;   // null = API unreachable, fall back to local
+  }
+}
+
+// ================================================================
+// AUTH LOGIC
+// ================================================================
+async function handleSignIn(e) {
+  e.preventDefault();
+  const email    = document.getElementById('email').value.trim().toLowerCase();
+  const password = document.getElementById('password').value;
+  const remember = document.getElementById('remember-me').checked;
+
+  hideError();
+  setLoading(true);
+
+  // 1. Try SharePoint validation first
+  let user = null;
+  const spResult = await validateUserViaSharePoint(email, password);
+
+  if (spResult === false) {
+    // SharePoint responded: credentials are definitely wrong
+    setLoading(false);
+    showError('Invalid email or password. Please try again.');
+    document.getElementById('password').value = '';
+    document.getElementById('password').focus();
+    document.getElementById('password').classList.add('error');
+    return;
+  }
+
+  if (spResult && spResult.email) {
+    // SharePoint validated successfully
+    user = spResult;
+  } else {
+    // spResult is null: API not configured or unreachable — try local USERS
+    user = USERS.find(u => u.email.toLowerCase() === email && u.password === password);
+  }
+
+  if (!user) {
+    setLoading(false);
+    showError('Invalid email or password. Please try again.');
+    document.getElementById('password').value = '';
+    document.getElementById('password').focus();
+    document.getElementById('password').classList.add('error');
+    return;
+  }
+
+  // Store session
+  const expiry = Date.now() + (remember ? 7 * 24 * 3600 * 1000 : 8 * 3600 * 1000);
+  const session = {
+    email:        user.email,
+    firstName:    user.firstName,
+    lastName:     user.lastName,
+    title:        user.title        || '',
+    businessUnit: user.businessUnit || '',
+    region:       user.region       || '',
+    signedInAt:   Date.now(),
+    expiry
+  };
+
+  if (remember) {
+    localStorage.setItem('iss_session', JSON.stringify(session));
+  } else {
+    sessionStorage.setItem('iss_session', JSON.stringify(session));
+  }
+
+  // Pre-populate the app profile
+  const profile = {
+    firstName:    user.firstName,
+    lastName:     user.lastName,
+    email:        user.email,
+    title:        user.title        || '',
+    businessUnit: user.businessUnit || '',
+    region:       user.region       || '',
+    phone:        user.phone        || '',
+    manager:      user.manager      || '',
+    avatar:       localStorage.getItem('iss_profile')
+                    ? (JSON.parse(localStorage.getItem('iss_profile')).avatar || '')
+                    : ''
+  };
+  localStorage.setItem('iss_profile', JSON.stringify(profile));
+  localStorage.setItem('iss_user', [user.firstName, user.lastName].filter(Boolean).join(' '));
+
+  // Redirect to app
+  window.location.href = APP_PAGE;
+}
+
+function setLoading(on) {
+  document.getElementById('signin-btn').disabled  = on;
+  document.getElementById('spinner').style.display = on ? 'block' : 'none';
+  document.getElementById('btn-arrow').style.display = on ? 'none' : 'inline';
+  document.getElementById('btn-label').textContent   = on ? 'Signing in…' : 'Sign In';
+}
+
+function showError(msg) {
+  document.getElementById('error-msg').textContent = msg;
+  document.getElementById('error-banner').classList.add('show');
+}
+function hideError() {
+  document.getElementById('error-banner').classList.remove('show');
+  document.getElementById('password').classList.remove('error');
+}
+
+function togglePassword() {
+  const pw = document.getElementById('password');
+  const btn = document.getElementById('pw-toggle');
+  if (pw.type === 'password') { pw.type = 'text';     btn.textContent = '🙈'; }
+  else                        { pw.type = 'password'; btn.textContent = '👁';  }
+}
+
+function showForgotMsg() {
+  showError('Please contact your system administrator to reset your password.');
+}
+
+function showAdminHint() {
+  showError('To add users, open login.html in a text editor and add entries to the USERS array.');
+}
+
+// Clear errors on input change
+document.getElementById('email').addEventListener('input', hideError);
+document.getElementById('password').addEventListener('input', hideError);
+
+// If already signed in, go straight to app
+(function checkExistingSession() {
+  const s = sessionStorage.getItem('iss_session') || localStorage.getItem('iss_session');
+  if (s) {
+    try {
+      const sess = JSON.parse(s);
+      // Session valid for 8 hours (sessionStorage) or 7 days (localStorage)
+      const maxAge = localStorage.getItem('iss_session') ? 7 * 24 * 3600 * 1000 : 8 * 3600 * 1000;
+      if (Date.now() - sess.signedInAt < maxAge) {
+        window.location.href = APP_PAGE;
+      } else {
+        localStorage.removeItem('iss_session');
+        sessionStorage.removeItem('iss_session');
+      }
+    } catch(e) {}
+  }
+})();
+</script>
+</body>
+</html>

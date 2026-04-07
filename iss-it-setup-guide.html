@@ -1,0 +1,731 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
+  <title>ISS Opportunity Manager — IT Setup Guide</title>
+  <style>
+    :root {
+      --primary: #1A4F6B;
+      --accent:  #B11C2C;
+      --dark:    #0D1B2A;
+      --gray-50: #f8fafc;
+      --gray-100:#f0f4f7;
+      --gray-200:#e2e8f0;
+      --gray-300:#cbd5e1;
+      --gray-500:#64748b;
+      --gray-700:#334155;
+      --gray-900:#0f172a;
+      --green:   #15803d;
+      --green-bg:#dcfce7;
+      --yellow-bg:#fef9c3;
+      --code-bg: #1e293b;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      background: var(--gray-50);
+      color: var(--gray-900);
+      font-size: 15px;
+      line-height: 1.65;
+    }
+    /* ── Header ── */
+    .page-header {
+      background: var(--dark);
+      padding: 32px 48px;
+      color: white;
+    }
+    .page-header h1 { font-size: 24px; font-weight: 700; margin-bottom: 6px; }
+    .page-header p  { color: rgba(255,255,255,0.65); font-size: 14px; }
+    .badge {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 11px;
+      font-weight: 600;
+      padding: 3px 10px;
+      border-radius: 20px;
+      letter-spacing: 0.5px;
+      margin-left: 10px;
+      vertical-align: middle;
+    }
+    /* ── Layout ── */
+    .container { max-width: 900px; margin: 0 auto; padding: 48px 32px; }
+    /* ── TOC ── */
+    .toc {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 12px;
+      padding: 24px 28px;
+      margin-bottom: 48px;
+    }
+    .toc h2 { font-size: 14px; font-weight: 700; color: var(--gray-500); text-transform: uppercase; letter-spacing: 0.8px; margin-bottom: 14px; }
+    .toc ol { padding-left: 20px; }
+    .toc li { margin-bottom: 6px; }
+    .toc a  { color: var(--primary); font-weight: 500; }
+    .toc a:hover { text-decoration: underline; }
+    /* ── Sections ── */
+    .section { margin-bottom: 56px; }
+    .section-header {
+      display: flex; align-items: center; gap: 14px;
+      margin-bottom: 24px;
+    }
+    .section-num {
+      width: 36px; height: 36px;
+      background: var(--primary);
+      color: white;
+      border-radius: 50%;
+      display: flex; align-items: center; justify-content: center;
+      font-weight: 700; font-size: 16px; flex-shrink: 0;
+    }
+    h2.section-title { font-size: 21px; font-weight: 700; color: var(--gray-900); }
+    h3 { font-size: 16px; font-weight: 700; color: var(--gray-700); margin: 24px 0 10px; }
+    p  { margin-bottom: 12px; color: var(--gray-700); }
+    /* ── Cards ── */
+    .card {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 10px;
+      padding: 20px 24px;
+      margin-bottom: 16px;
+    }
+    .card-title {
+      font-size: 14px; font-weight: 700; color: var(--primary);
+      margin-bottom: 10px;
+    }
+    /* ── Steps ── */
+    .steps ol { padding-left: 22px; }
+    .steps li { margin-bottom: 10px; color: var(--gray-700); }
+    .steps li strong { color: var(--gray-900); }
+    /* ── Code ── */
+    pre {
+      background: var(--code-bg);
+      color: #e2e8f0;
+      padding: 16px 20px;
+      border-radius: 8px;
+      overflow-x: auto;
+      font-size: 13px;
+      line-height: 1.6;
+      margin: 12px 0;
+    }
+    code {
+      font-family: 'Courier New', Courier, monospace;
+    }
+    pre code { color: inherit; }
+    .inline-code {
+      background: var(--gray-100);
+      border: 1px solid var(--gray-200);
+      padding: 2px 6px;
+      border-radius: 4px;
+      font-family: 'Courier New', monospace;
+      font-size: 13px;
+      color: var(--accent);
+    }
+    /* ── Table ── */
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      font-size: 13.5px;
+      margin: 14px 0;
+    }
+    th {
+      background: var(--primary);
+      color: white;
+      text-align: left;
+      padding: 10px 14px;
+      font-weight: 600;
+    }
+    td {
+      padding: 9px 14px;
+      border-bottom: 1px solid var(--gray-200);
+      color: var(--gray-700);
+    }
+    tr:last-child td { border-bottom: none; }
+    tr:nth-child(even) td { background: var(--gray-50); }
+    .type-tag {
+      display: inline-block;
+      background: var(--primary);
+      color: white;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    .req-tag {
+      display: inline-block;
+      background: var(--accent);
+      color: white;
+      font-size: 11px;
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-weight: 500;
+    }
+    /* ── Alerts ── */
+    .alert {
+      padding: 14px 18px;
+      border-radius: 8px;
+      font-size: 14px;
+      margin: 16px 0;
+      display: flex;
+      gap: 12px;
+    }
+    .alert-info  { background: #dbeafe; color: #1e40af; border-left: 4px solid #3b82f6; }
+    .alert-warn  { background: var(--yellow-bg); color: #92400e; border-left: 4px solid #f59e0b; }
+    .alert-green { background: var(--green-bg); color: #15803d; border-left: 4px solid #22c55e; }
+    /* ── Flow diagram ── */
+    .flow-box {
+      display: flex; align-items: center; gap: 0; margin: 20px 0; flex-wrap: wrap;
+    }
+    .flow-step {
+      background: white;
+      border: 1px solid var(--gray-200);
+      border-radius: 8px;
+      padding: 12px 16px;
+      text-align: center;
+      min-width: 130px;
+      font-size: 13px;
+    }
+    .flow-step .icon { font-size: 20px; margin-bottom: 4px; }
+    .flow-step .label { font-weight: 600; color: var(--gray-700); }
+    .flow-step .sub { font-size: 11px; color: var(--gray-500); }
+    .flow-arrow {
+      color: var(--gray-300);
+      font-size: 22px;
+      padding: 0 8px;
+    }
+    /* ── Kbd ── */
+    kbd {
+      background: white;
+      border: 1px solid var(--gray-300);
+      border-bottom: 2px solid var(--gray-400);
+      padding: 2px 7px;
+      border-radius: 4px;
+      font-size: 12px;
+      font-family: inherit;
+    }
+    /* ── HR ── */
+    hr { border: none; border-top: 1px solid var(--gray-200); margin: 40px 0; }
+    /* ── Footer ── */
+    .page-footer {
+      background: var(--dark);
+      color: rgba(255,255,255,0.5);
+      text-align: center;
+      padding: 24px;
+      font-size: 13px;
+      margin-top: 40px;
+    }
+  </style>
+</head>
+<body>
+
+<div class="page-header">
+  <h1>ISS Opportunity Manager <span class="badge">IT Setup Guide</span></h1>
+  <p>SharePoint + Power Automate Integration — Step-by-Step Configuration Reference</p>
+</div>
+
+<div class="container">
+
+  <!-- ── TOC ── -->
+  <div class="toc">
+    <h2>Contents</h2>
+    <ol>
+      <li><a href="#overview">Architecture Overview</a></li>
+      <li><a href="#prereqs">Prerequisites</a></li>
+      <li><a href="#sharepoint">Create SharePoint Lists</a></li>
+      <li><a href="#flows">Create Power Automate Flows</a></li>
+      <li><a href="#configure">Configure the App</a></li>
+      <li><a href="#users">Managing Users</a></li>
+      <li><a href="#test">Testing the Integration</a></li>
+      <li><a href="#faq">Troubleshooting &amp; FAQ</a></li>
+    </ol>
+  </div>
+
+  <!-- ── Section 1 ── -->
+  <div class="section" id="overview">
+    <div class="section-header">
+      <div class="section-num">1</div>
+      <h2 class="section-title">Architecture Overview</h2>
+    </div>
+
+    <p>The ISS Opportunity Manager is a self-contained HTML file that runs entirely in the browser. SharePoint acts as the central database, and <strong>Power Automate flows</strong> act as the API layer between the browser and SharePoint.</p>
+
+    <div class="flow-box">
+      <div class="flow-step"><div class="icon">🖥️</div><div class="label">Browser</div><div class="sub">login.html + main app</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="icon">⚡</div><div class="label">Power Automate</div><div class="sub">HTTP-triggered flows</div></div>
+      <div class="flow-arrow">→</div>
+      <div class="flow-step"><div class="icon">📋</div><div class="label">SharePoint Lists</div><div class="sub">Data store</div></div>
+    </div>
+
+    <div class="alert alert-info">
+      <span>ℹ️</span>
+      <div>Until SharePoint is configured, the app runs in <strong>local-only mode</strong> — data is stored in the browser's localStorage. This is useful for testing. Once flows are configured, all data syncs to SharePoint automatically.</div>
+    </div>
+
+    <h3>Data flows</h3>
+    <div class="card">
+      <table>
+        <thead><tr><th>Action in App</th><th>Flow Called</th><th>SharePoint List</th></tr></thead>
+        <tbody>
+          <tr><td>Page loads</td><td>Get Opportunities + Get Config</td><td>ISS_Opportunities, ISS_Config, ISS_Customers</td></tr>
+          <tr><td>Save / Edit opportunity</td><td>Save Opportunity</td><td>ISS_Opportunities</td></tr>
+          <tr><td>Delete opportunity</td><td>Delete Opportunity</td><td>ISS_Opportunities</td></tr>
+          <tr><td>User signs in</td><td>Validate User</td><td>ISS_Users</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Section 2 ── -->
+  <div class="section" id="prereqs">
+    <div class="section-header">
+      <div class="section-num">2</div>
+      <h2 class="section-title">Prerequisites</h2>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Required access</div>
+      <table>
+        <thead><tr><th>Item</th><th>Required For</th></tr></thead>
+        <tbody>
+          <tr><td>Microsoft 365 account</td><td>Everything</td></tr>
+          <tr><td>SharePoint site (Owner or Member)</td><td>Creating lists</td></tr>
+          <tr><td>Power Automate license (included in M365)</td><td>Creating flows</td></tr>
+          <tr><td>Ability to create HTTP-triggered flows</td><td>API endpoints</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <div class="alert alert-warn">
+      <span>⚠️</span>
+      <div><strong>CORS note:</strong> Each Power Automate Response action must include <code class="inline-code">Access-Control-Allow-Origin: *</code> in the response headers so the browser can read the response. This is covered in the flow instructions below.</div>
+    </div>
+  </div>
+
+  <!-- ── Section 3 ── -->
+  <div class="section" id="sharepoint">
+    <div class="section-header">
+      <div class="section-num">3</div>
+      <h2 class="section-title">Create SharePoint Lists</h2>
+    </div>
+
+    <p>Go to your SharePoint site → <strong>Site Contents</strong> → <strong>New → List</strong>. Create the following four lists with the exact column names below.</p>
+
+    <div class="alert alert-info">
+      <span>💡</span>
+      <div>All column names are <strong>case-sensitive</strong> in the Power Automate expressions. Use the exact names as shown. The <em>Title</em> column is renamed in some lists — rename it by clicking the column header.</div>
+    </div>
+
+    <!-- List 1 -->
+    <h3>List 1: <span class="inline-code">ISS_Opportunities</span></h3>
+    <p>Main data store for all opportunities. One row per opportunity.</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>Column Name</th><th>Type</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Title</td><td><span class="type-tag">Single line</span></td><td>Rename to <strong>OpportunityID</strong> (or leave as Title — the app sends this field as <code class="inline-code">opportunityId</code>)</td></tr>
+          <tr><td>AppId</td><td><span class="type-tag">Single line</span></td><td>Stores the app's internal UUID — used for update/delete lookups. <span class="req-tag">Required</span></td></tr>
+          <tr><td>BusinessUnit</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>Status</td><td><span class="type-tag">Single line</span></td><td>OPEN, CLOSED, ON HOLD, CANCELLED</td></tr>
+          <tr><td>Stage</td><td><span class="type-tag">Single line</span></td><td>1-PROSPECTING … 7-LOST</td></tr>
+          <tr><td>CustomerName</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>CustomerNumber</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>Offering</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>Industry</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>ServiceCategory</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>EstValue</td><td><span class="type-tag">Number</span></td><td>Estimated dollar value</td></tr>
+          <tr><td>ClosePercent</td><td><span class="type-tag">Number</span></td><td>0–100</td></tr>
+          <tr><td>ProjectedCloseDate</td><td><span class="type-tag">Date and Time</span></td><td>Date only format</td></tr>
+          <tr><td>ProjectedDeliveryDate</td><td><span class="type-tag">Date and Time</span></td><td>Date only format</td></tr>
+          <tr><td>CreatedBy2</td><td><span class="type-tag">Single line</span></td><td>Rename the built-in CreatedBy if needed, or use a custom column. The app sends <code class="inline-code">createdBy</code> as a string (email or name).</td></tr>
+          <tr><td>CreatedDate</td><td><span class="type-tag">Date and Time</span></td><td></td></tr>
+          <tr><td>ReasonWon</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>ReasonLost</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- List 2 -->
+    <h3>List 2: <span class="inline-code">ISS_Users</span></h3>
+    <p>User accounts for login authentication. Add one row per user.</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>Column Name</th><th>Type</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Title</td><td><span class="type-tag">Single line</span></td><td>Rename to <strong>Email</strong>. Store as lowercase. <span class="req-tag">Required</span></td></tr>
+          <tr><td>Password</td><td><span class="type-tag">Single line</span></td><td>Plain text. Recommend restricting column permissions to Owners only.</td></tr>
+          <tr><td>FirstName</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>LastName</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>JobTitle</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>BusinessUnit</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>Region</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>Phone</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>Manager</td><td><span class="type-tag">Single line</span></td><td></td></tr>
+          <tr><td>IsActive</td><td><span class="type-tag">Yes/No</span></td><td>Set to Yes to allow login</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- List 3 -->
+    <h3>List 3: <span class="inline-code">ISS_Customers</span></h3>
+    <p>Customer lookup list powering the customer combobox in the opportunity form.</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>Column Name</th><th>Type</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Title</td><td><span class="type-tag">Single line</span></td><td>Rename to <strong>CustomerName</strong></td></tr>
+          <tr><td>CustomerNumber</td><td><span class="type-tag">Single line</span></td><td>e.g. C100001</td></tr>
+        </tbody>
+      </table>
+    </div>
+
+    <!-- List 4 -->
+    <h3>List 4: <span class="inline-code">ISS_Config</span></h3>
+    <p>Stores dropdown options. One row per dropdown type.</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>Column Name</th><th>Type</th><th>Notes</th></tr></thead>
+        <tbody>
+          <tr><td>Title</td><td><span class="type-tag">Single line</span></td><td>Dropdown key: <code class="inline-code">offering</code>, <code class="inline-code">industry</code>, <code class="inline-code">stage</code>, <code class="inline-code">serviceCategory</code>, <code class="inline-code">reasonWon</code>, <code class="inline-code">reasonLost</code>, <code class="inline-code">status</code></td></tr>
+          <tr><td>ConfigValues</td><td><span class="type-tag">Multiple lines</span></td><td>JSON array string, e.g. <code class="inline-code">["Field Services","Equipment Services"]</code></td></tr>
+        </tbody>
+      </table>
+      <p style="margin-top:12px;font-size:13px;color:var(--gray-500);">Populate one row for each dropdown key. The flow reads these and returns them as a <code class="inline-code">dropdowns</code> object to the app.</p>
+    </div>
+  </div>
+
+  <!-- ── Section 4 ── -->
+  <div class="section" id="flows">
+    <div class="section-header">
+      <div class="section-num">4</div>
+      <h2 class="section-title">Create Power Automate Flows</h2>
+    </div>
+
+    <p>Go to <a href="https://make.powerautomate.com" target="_blank">make.powerautomate.com</a> → <strong>Create</strong> → <strong>Instant cloud flow</strong> → trigger: <strong>"When an HTTP request is received"</strong>.</p>
+
+    <div class="alert alert-warn">
+      <span>⚠️</span>
+      <div>After saving each flow, copy the <strong>HTTP POST URL</strong> from the trigger step — you'll need this to configure the app. The URL includes a long SAS token and is unique per flow.</div>
+    </div>
+
+    <div class="alert alert-info">
+      <span>🔒</span>
+      <div>All Power Automate HTTP-triggered flows require the HTTP POST URL to work — treat it like a password. Anyone with the URL can call the flow.</div>
+    </div>
+
+    <!-- Flow 1 -->
+    <div class="card" id="flow1">
+      <div class="card-title">Flow 1 — Get Opportunities</div>
+      <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px;">Called on app load to fetch all opportunity records from SharePoint.</p>
+      <div class="steps">
+        <ol>
+          <li><strong>Trigger:</strong> "When an HTTP request is received" — Method: POST</li>
+          <li><strong>Action:</strong> "Get items" → SharePoint site → List: <code class="inline-code">ISS_Opportunities</code> → Top Count: 5000</li>
+          <li><strong>Action:</strong> "Select" (Data Operations) → From: <em>value</em> from step 2 → Map each field:<br/>
+            Set the Map to include all columns: <code class="inline-code">id</code>, <code class="inline-code">opportunityId</code>, <code class="inline-code">businessUnit</code>, etc. (see JSON schema below)
+          </li>
+          <li><strong>Action:</strong> "Response" — Status: 200 — Body: see JSON below — Headers: see CORS headers below</li>
+        </ol>
+      </div>
+      <p style="font-size:13px;margin-top:14px;"><strong>Response body:</strong></p>
+<pre><code>{
+  "items": @{body('Select')}
+}</code></pre>
+      <p style="font-size:13px;margin-top:14px;"><strong>Select action mapping</strong> (map SharePoint columns → app field names):</p>
+<pre><code>{
+  "id":                    "@{item()?['AppId']}",
+  "opportunityId":         "@{item()?['Title']}",
+  "businessUnit":          "@{item()?['BusinessUnit']}",
+  "status":                "@{item()?['Status']}",
+  "stage":                 "@{item()?['Stage']}",
+  "customerName":          "@{item()?['CustomerName']}",
+  "customerNumber":        "@{item()?['CustomerNumber']}",
+  "offering":              "@{item()?['Offering']}",
+  "industry":              "@{item()?['Industry']}",
+  "serviceCategory":       "@{item()?['ServiceCategory']}",
+  "estValue":              "@{item()?['EstValue']}",
+  "closePercent":          "@{item()?['ClosePercent']}",
+  "projectedCloseDate":    "@{item()?['ProjectedCloseDate']}",
+  "projectedDeliveryDate": "@{item()?['ProjectedDeliveryDate']}",
+  "createdBy":             "@{item()?['CreatedBy2']}",
+  "createdDate":           "@{item()?['CreatedDate']}",
+  "reasonWon":             "@{item()?['ReasonWon']}",
+  "reasonLost":            "@{item()?['ReasonLost']}"
+}</code></pre>
+    </div>
+
+    <!-- Flow 2 -->
+    <div class="card" id="flow2">
+      <div class="card-title">Flow 2 — Save Opportunity (Create &amp; Update)</div>
+      <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px;">Handles both creating new and updating existing opportunities. The app always sends the full opportunity object.</p>
+      <div class="steps">
+        <ol>
+          <li><strong>Trigger:</strong> "When an HTTP request is received" — Method: POST — Request body JSON schema:
+<pre><code>{
+  "type": "object",
+  "properties": {
+    "id": { "type": "string" },
+    "opportunityId": { "type": "string" },
+    "businessUnit": { "type": "string" },
+    "status": { "type": "string" },
+    "stage": { "type": "string" },
+    "customerName": { "type": "string" },
+    "customerNumber": { "type": "string" },
+    "offering": { "type": "string" },
+    "industry": { "type": "string" },
+    "serviceCategory": { "type": "string" },
+    "estValue": { "type": "number" },
+    "closePercent": { "type": "number" },
+    "projectedCloseDate": { "type": "string" },
+    "projectedDeliveryDate": { "type": "string" },
+    "createdBy": { "type": "string" },
+    "createdDate": { "type": "string" },
+    "reasonWon": { "type": "string" },
+    "reasonLost": { "type": "string" }
+  }
+}</code></pre>
+          </li>
+          <li><strong>Action:</strong> "Get items" → ISS_Opportunities → Filter Query: <code class="inline-code">AppId eq '@{triggerBody()?['id']}'</code></li>
+          <li><strong>Action:</strong> "Condition" — check if <code class="inline-code">length(body('Get_items')?['value'])</code> is greater than 0
+            <ul style="margin-top:8px;padding-left:20px;">
+              <li><strong>If yes (update):</strong> "Update item" → ISS_Opportunities → ID: <code class="inline-code">first(body('Get_items')?['value'])?['ID']</code> → Set all field values from trigger body</li>
+              <li><strong>If no (create):</strong> "Create item" → ISS_Opportunities → Set all field values from trigger body, including <code class="inline-code">AppId: @{triggerBody()?['id']}</code></li>
+            </ul>
+          </li>
+          <li><strong>Action:</strong> "Response" — Status: 200 — Body: <code class="inline-code">&#123;"success": true&#125;</code> — add CORS headers</li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Flow 3 -->
+    <div class="card" id="flow3">
+      <div class="card-title">Flow 3 — Delete Opportunity</div>
+      <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px;">Deletes a record from SharePoint by its app UUID.</p>
+      <div class="steps">
+        <ol>
+          <li><strong>Trigger:</strong> "When an HTTP request is received" — Method: POST — Body: <code class="inline-code">&#123;"id": "..."&#125;</code></li>
+          <li><strong>Action:</strong> "Get items" → ISS_Opportunities → Filter Query: <code class="inline-code">AppId eq '@{triggerBody()?['id']}'</code></li>
+          <li><strong>Action:</strong> "Apply to each" → input: <code class="inline-code">body('Get_items')?['value']</code>
+            <ul style="margin-top:8px;padding-left:20px;">
+              <li><strong>Inside loop:</strong> "Delete item" → ISS_Opportunities → ID: <code class="inline-code">items('Apply_to_each')?['ID']</code></li>
+            </ul>
+          </li>
+          <li><strong>Action:</strong> "Response" — Status: 200 — Body: <code class="inline-code">&#123;"success": true&#125;</code></li>
+        </ol>
+      </div>
+    </div>
+
+    <!-- Flow 4 -->
+    <div class="card" id="flow4">
+      <div class="card-title">Flow 4 — Get Config (Dropdowns + Customers)</div>
+      <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px;">Returns all dropdown options and the customer list to populate the app's form fields.</p>
+      <div class="steps">
+        <ol>
+          <li><strong>Trigger:</strong> "When an HTTP request is received" — Method: POST</li>
+          <li><strong>Action:</strong> "Get items" → ISS_Config → all items</li>
+          <li><strong>Action:</strong> "Get items" → ISS_Customers → all items</li>
+          <li><strong>Action:</strong> "Select" (for customers) → From: ISS_Customers value → Map: <code class="inline-code">&#123;"name": "@&#123;item()?['Title']&#125;", "number": "@&#123;item()?['CustomerNumber']&#125;"&#125;</code></li>
+          <li><strong>Action:</strong> "Response" — Status: 200 — Body:
+<pre><code>{
+  "dropdowns": {
+    "offering":       @{json(first(filter(body('Get_Config_items')?['value'], item()?['Title'] eq 'offering'))?['ConfigValues'])},
+    "industry":       @{json(first(filter(body('Get_Config_items')?['value'], item()?['Title'] eq 'industry'))?['ConfigValues'])},
+    "stage":          @{json(first(filter(body('Get_Config_items')?['value'], item()?['Title'] eq 'stage'))?['ConfigValues'])},
+    "serviceCategory":@{json(first(filter(body('Get_Config_items')?['value'], item()?['Title'] eq 'serviceCategory'))?['ConfigValues'])},
+    "status":         @{json(first(filter(body('Get_Config_items')?['value'], item()?['Title'] eq 'status'))?['ConfigValues'])},
+    "reasonWon":      @{json(first(filter(body('Get_Config_items')?['value'], item()?['Title'] eq 'reasonWon'))?['ConfigValues'])},
+    "reasonLost":     @{json(first(filter(body('Get_Config_items')?['value'], item()?['Title'] eq 'reasonLost'))?['ConfigValues'])}
+  },
+  "customers": @{body('Select_Customers')}
+}</code></pre>
+          </li>
+        </ol>
+      </div>
+      <div class="alert alert-warn" style="margin-top:14px;">
+        <span>💡</span>
+        <div>The expression above uses <code class="inline-code">filter()</code> to find the config row by Title. If any dropdown key is missing from ISS_Config, that key will be <code class="inline-code">null</code> — the app will fall back to its built-in values for that dropdown.</div>
+      </div>
+    </div>
+
+    <!-- Flow 5 -->
+    <div class="card" id="flow5">
+      <div class="card-title">Flow 5 — Validate User (Login)</div>
+      <p style="font-size:13px;color:var(--gray-500);margin-bottom:14px;">Authenticates login attempts against the ISS_Users SharePoint list.</p>
+      <div class="steps">
+        <ol>
+          <li><strong>Trigger:</strong> "When an HTTP request is received" — Method: POST — Body: <code class="inline-code">&#123;"email": "...", "password": "..."&#125;</code></li>
+          <li><strong>Action:</strong> "Get items" → ISS_Users → Filter Query: <code class="inline-code">Title eq '@{toLower(triggerBody()?['email'])}'</code> and <code class="inline-code">IsActive eq 1</code></li>
+          <li><strong>Action:</strong> "Condition" — check if <code class="inline-code">length(body('Get_items')?['value'])</code> is greater than 0 AND <code class="inline-code">first(body('Get_items')?['value'])?['Password']</code> equals <code class="inline-code">@{triggerBody()?['password']}</code>
+            <ul style="margin-top:8px;padding-left:20px;">
+              <li><strong>If yes:</strong> Response with user data (see below)</li>
+              <li><strong>If no:</strong> Response with <code class="inline-code">&#123;"valid": false&#125;</code></li>
+            </ul>
+          </li>
+        </ol>
+      </div>
+      <p style="font-size:13px;margin-top:14px;"><strong>Success response body:</strong></p>
+<pre><code>{
+  "valid": true,
+  "user": {
+    "email":        "@{first(body('Get_items')?['value'])?['Title']}",
+    "firstName":    "@{first(body('Get_items')?['value'])?['FirstName']}",
+    "lastName":     "@{first(body('Get_items')?['value'])?['LastName']}",
+    "title":        "@{first(body('Get_items')?['value'])?['JobTitle']}",
+    "businessUnit": "@{first(body('Get_items')?['value'])?['BusinessUnit']}",
+    "region":       "@{first(body('Get_items')?['value'])?['Region']}",
+    "phone":        "@{first(body('Get_items')?['value'])?['Phone']}",
+    "manager":      "@{first(body('Get_items')?['value'])?['Manager']}"
+  }
+}</code></pre>
+    </div>
+
+    <!-- CORS headers -->
+    <h3>Required CORS Headers (add to every Response action)</h3>
+    <p>In each flow's Response action, click <strong>Show advanced options</strong> and add these headers:</p>
+    <div class="card">
+      <table>
+        <thead><tr><th>Header Name</th><th>Value</th></tr></thead>
+        <tbody>
+          <tr><td><code class="inline-code">Access-Control-Allow-Origin</code></td><td><code class="inline-code">*</code></td></tr>
+          <tr><td><code class="inline-code">Access-Control-Allow-Headers</code></td><td><code class="inline-code">Content-Type</code></td></tr>
+          <tr><td><code class="inline-code">Content-Type</code></td><td><code class="inline-code">application/json</code></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Section 5 ── -->
+  <div class="section" id="configure">
+    <div class="section-header">
+      <div class="section-num">5</div>
+      <h2 class="section-title">Configure the App</h2>
+    </div>
+
+    <p>Once all five flows are created, configure the app with their URLs. This only needs to be done <strong>once per device</strong> (settings are stored in the browser's localStorage).</p>
+
+    <div class="card">
+      <div class="card-title">Steps</div>
+      <div class="steps">
+        <ol>
+          <li>Open <code class="inline-code">login.html</code> and sign in.</li>
+          <li>On any screen in the app, press <kbd>Ctrl</kbd> + <kbd>Shift</kbd> + <kbd>I</kbd> to open the <strong>SharePoint Integration</strong> config panel.</li>
+          <li>Paste the Power Automate HTTP POST URL into each field.</li>
+          <li>Click <strong>Test</strong> next to each URL to verify the endpoint is reachable.</li>
+          <li>Click <strong>Save Configuration</strong>. The app will immediately sync data from SharePoint.</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="alert alert-green">
+      <span>✅</span>
+      <div>The status bar at the top of the config panel will turn green and say "<strong>SharePoint integration is active</strong>" once the required URLs (Get Opportunities + Save Opportunity) are saved.</div>
+    </div>
+  </div>
+
+  <!-- ── Section 6 ── -->
+  <div class="section" id="users">
+    <div class="section-header">
+      <div class="section-num">6</div>
+      <h2 class="section-title">Managing Users</h2>
+    </div>
+
+    <p>Once the <strong>Validate User</strong> flow is configured, user accounts are managed entirely through the <code class="inline-code">ISS_Users</code> SharePoint list.</p>
+
+    <div class="card">
+      <div class="card-title">To add a new user</div>
+      <div class="steps">
+        <ol>
+          <li>Go to the <code class="inline-code">ISS_Users</code> SharePoint list</li>
+          <li>Click <strong>+ New</strong></li>
+          <li>Fill in <strong>Title</strong> (email address, lowercase), <strong>Password</strong>, first/last name and other fields</li>
+          <li>Set <strong>IsActive</strong> to <strong>Yes</strong></li>
+          <li>Click <strong>Save</strong> — the user can log in immediately</li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-title">To disable a user</div>
+      <p style="font-size:13px;">Set the <strong>IsActive</strong> column to <strong>No</strong> on their row. They will receive an "invalid credentials" error on next login attempt.</p>
+    </div>
+
+    <div class="alert alert-warn">
+      <span>⚠️</span>
+      <div><strong>Fallback users:</strong> The <code class="inline-code">USERS</code> array inside <code class="inline-code">login.html</code> still works as a fallback if the Validate User flow is unreachable (e.g. Power Automate outage). Keep at least one IT admin account in that array.</div>
+    </div>
+  </div>
+
+  <!-- ── Section 7 ── -->
+  <div class="section" id="test">
+    <div class="section-header">
+      <div class="section-num">7</div>
+      <h2 class="section-title">Testing the Integration</h2>
+    </div>
+
+    <div class="card">
+      <div class="card-title">Checklist</div>
+      <table>
+        <thead><tr><th>Test</th><th>Expected Result</th></tr></thead>
+        <tbody>
+          <tr><td>Sign in with a SharePoint user account</td><td>Login succeeds and profile is pre-filled</td></tr>
+          <tr><td>App loads after login</td><td>Sync banner appears briefly; opportunities load from SharePoint</td></tr>
+          <tr><td>Create a new opportunity and save</td><td>Record appears in ISS_Opportunities SharePoint list within seconds</td></tr>
+          <tr><td>Edit an existing opportunity</td><td>SharePoint record updates (check Modified column)</td></tr>
+          <tr><td>Delete an opportunity</td><td>Record removed from SharePoint list</td></tr>
+          <tr><td>Open app on a second device</td><td>Same opportunities visible — confirming cross-device sync</td></tr>
+          <tr><td>Check dropdowns in form</td><td>Values match what's in ISS_Config SharePoint list</td></tr>
+          <tr><td>Type customer name in opportunity form</td><td>Customers from ISS_Customers list appear in suggestions</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ── Section 8 ── -->
+  <div class="section" id="faq">
+    <div class="section-header">
+      <div class="section-num">8</div>
+      <h2 class="section-title">Troubleshooting &amp; FAQ</h2>
+    </div>
+
+    <h3>The app shows "SharePoint sync failed — saved locally"</h3>
+    <p>The Power Automate flow returned an error or timed out. Check: (1) the URL is correct in the config panel, (2) the flow is turned on in Power Automate, (3) the SharePoint site and list still exist with the correct column names.</p>
+
+    <h3>Test button shows "Connection failed — check URL &amp; CORS"</h3>
+    <p>Most likely the CORS headers are missing from the flow's Response action. In each flow, open the Response action → Show advanced options → add the three headers listed in Section 4.</p>
+
+    <h3>Users can't log in even though their SharePoint row is correct</h3>
+    <p>Check that: (1) the <code class="inline-code">IsActive</code> column is set to Yes, (2) the Title column contains their email in <strong>all lowercase</strong>, (3) the Validate User flow URL is saved in the app's config panel.</p>
+
+    <h3>Dropdown values in the form don't match SharePoint</h3>
+    <p>The Get Config flow may not be configured, or the ISS_Config list rows use a different Title value than expected. The Title must be exactly: <code class="inline-code">offering</code>, <code class="inline-code">industry</code>, <code class="inline-code">stage</code>, <code class="inline-code">serviceCategory</code>, <code class="inline-code">status</code>, <code class="inline-code">reasonWon</code>, <code class="inline-code">reasonLost</code> (case-sensitive, camelCase).</p>
+
+    <h3>The app works on my computer but not on others</h3>
+    <p>The Power Automate URLs are stored per-browser in localStorage. Each new device/browser needs the URLs entered once via <kbd>Ctrl</kbd>+<kbd>Shift</kbd>+<kbd>I</kbd>. For a shared deployment, consider embedding the URLs directly in the HTML file's <code class="inline-code">ISS_API</code> object.</p>
+
+    <h3>Can I host the HTML files on SharePoint itself?</h3>
+    <p>Yes — upload both <code class="inline-code">login.html</code> and <code class="inline-code">iss-opportunity-manager.html</code> to a SharePoint document library and share the link. Authentication will still use the login page. Make sure both files are in the same library folder so relative links work.</p>
+
+    <h3>How do I embed the Power Automate URLs directly into the HTML file?</h3>
+    <p>Open <code class="inline-code">iss-opportunity-manager.html</code> in a text editor. Find the <code class="inline-code">ISS_API</code> object near the top of the <code class="inline-code">&lt;script&gt;</code> section. Replace the empty strings with your URLs:</p>
+<pre><code>let ISS_API = (() => {
+  const s = JSON.parse(localStorage.getItem('iss_api_config') || '{}');
+  return {
+    getOpportunities:  s.getOpportunities  || 'YOUR_URL_HERE',
+    saveOpportunity:   s.saveOpportunity   || 'YOUR_URL_HERE',
+    deleteOpportunity: s.deleteOpportunity || 'YOUR_URL_HERE',
+    getConfig:         s.getConfig         || 'YOUR_URL_HERE',
+    validateUser:      s.validateUser      || 'YOUR_URL_HERE',
+    ...
+  };
+})();</code></pre>
+    <p>This way users never need to configure anything — the URLs are baked in.</p>
+  </div>
+
+</div>
+
+<div class="page-footer">
+  ISS Opportunity Manager — IT Setup Guide &nbsp;|&nbsp; Internal Use Only
+</div>
+
+</body>
+</html>

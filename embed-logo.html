@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width,initial-scale=1"/>
+  <title>ISS Logo Embedder</title>
+  <style>
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,sans-serif;
+         background:#f0f4f7;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:24px}
+    .card{background:#fff;border-radius:16px;box-shadow:0 4px 24px rgba(0,0,0,.10);
+          max-width:520px;width:100%;overflow:hidden}
+    .card-header{background:#0D1B2A;padding:28px 32px;text-align:center}
+    .card-header svg{display:block;margin:0 auto 14px}
+    .card-title{color:#fff;font-size:20px;font-weight:700}
+    .card-sub{color:rgba(255,255,255,.65);font-size:13px;margin-top:4px}
+    .card-body{padding:32px}
+    .step{display:flex;gap:14px;align-items:flex-start;margin-bottom:24px}
+    .step-num{width:28px;height:28px;border-radius:50%;background:#1A4F6B;color:#fff;
+              font-size:13px;font-weight:700;display:flex;align-items:center;justify-content:center;flex-shrink:0;margin-top:2px}
+    .step-body label{font-size:14px;font-weight:600;color:#1a1a2e;display:block;margin-bottom:6px}
+    .step-body p{font-size:13px;color:#64748b;margin-bottom:10px}
+    .file-btn{display:inline-flex;align-items:center;gap:8px;background:#f0f4f7;
+              border:1.5px dashed #cbd5e1;border-radius:8px;padding:10px 16px;
+              font-size:13px;font-weight:600;color:#334155;cursor:pointer;transition:all .2s;width:100%}
+    .file-btn:hover{border-color:#1A4F6B;background:#dceef7;color:#1A4F6B}
+    .file-chosen{font-size:12px;color:#16a34a;margin-top:6px;display:none}
+    .file-chosen.show{display:block}
+    input[type=file]{display:none}
+    .btn-generate{width:100%;background:#B11C2C;color:#fff;border:none;border-radius:10px;
+                  padding:14px;font-size:15px;font-weight:700;cursor:pointer;
+                  transition:background .2s;margin-top:8px;display:flex;align-items:center;
+                  justify-content:center;gap:8px}
+    .btn-generate:hover{background:#8B1520}
+    .btn-generate:disabled{background:#cbd5e1;cursor:not-allowed}
+    .status{margin-top:16px;padding:12px 16px;border-radius:8px;font-size:13px;
+            font-weight:600;display:none}
+    .status.success{background:#dcfce7;color:#16a34a;display:block}
+    .status.error{background:#fee2e2;color:#B11C2C;display:block}
+    .divider{height:1px;background:#e2e8f0;margin:24px 0}
+    .preview-wrap{display:none;text-align:center}
+    .preview-wrap.show{display:block}
+    .preview-wrap img{max-height:60px;max-width:100%;margin-bottom:8px}
+    .preview-label{font-size:12px;color:#94a3b8}
+  </style>
+</head>
+<body>
+<div class="card">
+  <div class="card-header">
+    <svg width="48" height="48" viewBox="0 0 42 42" fill="none">
+      <path d="M21 3 A18 18 0 1 1 5.5 36" stroke="#B11C2C" stroke-width="5.5" stroke-linecap="round"/>
+      <path d="M21 9.5 A11.5 11.5 0 1 1 9 32" stroke="#B11C2C" stroke-width="4.5" stroke-linecap="round" opacity=".75"/>
+      <path d="M21 16 A5 5 0 1 1 16 26" stroke="#B11C2C" stroke-width="3.5" stroke-linecap="round" opacity=".5"/>
+    </svg>
+    <div class="card-title">ISS Logo Embedder</div>
+    <div class="card-sub">Permanently bake your logo into the Opportunity Manager</div>
+  </div>
+  <div class="card-body">
+
+    <!-- Step 1 -->
+    <div class="step">
+      <div class="step-num">1</div>
+      <div class="step-body" style="flex:1">
+        <label>Select your logo file</label>
+        <p>Pick the ISS logo PNG (transparent background works best)</p>
+        <label class="file-btn" for="logo-input">🖼 Choose logo PNG…</label>
+        <input type="file" id="logo-input" accept="image/*" onchange="onLogoSelected(this)"/>
+        <div class="file-chosen" id="logo-chosen">✅ Logo selected</div>
+        <div class="preview-wrap" id="logo-preview">
+          <img id="preview-img" src="" alt="logo preview"/>
+          <div class="preview-label">Preview</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Step 2 -->
+    <div class="step">
+      <div class="step-num">2</div>
+      <div class="step-body" style="flex:1">
+        <label>Select the Opportunity Manager HTML file</label>
+        <p>Pick <strong>iss-opportunity-manager.html</strong> from wherever you saved it</p>
+        <label class="file-btn" for="html-input">📄 Choose iss-opportunity-manager.html…</label>
+        <input type="file" id="html-input" accept=".html" onchange="onHtmlSelected(this)"/>
+        <div class="file-chosen" id="html-chosen">✅ HTML file selected</div>
+      </div>
+    </div>
+
+    <div class="divider"></div>
+
+    <!-- Step 3 -->
+    <div class="step">
+      <div class="step-num">3</div>
+      <div class="step-body" style="flex:1">
+        <label>Generate &amp; download</label>
+        <p>Creates a new HTML file with your logo permanently embedded — replace your old file with this one</p>
+        <button class="btn-generate" id="btn-generate" onclick="generate()" disabled>
+          ⬇ Generate Updated App
+        </button>
+        <div class="status" id="status-msg"></div>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<script>
+  let logoDataUrl = null;
+  let htmlText    = null;
+
+  function onLogoSelected(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      logoDataUrl = e.target.result;
+      document.getElementById('logo-chosen').classList.add('show');
+      const prev = document.getElementById('logo-preview');
+      prev.classList.add('show');
+      document.getElementById('preview-img').src = logoDataUrl;
+      tryEnableButton();
+    };
+    reader.readAsDataURL(file);
+  }
+
+  function onHtmlSelected(input) {
+    const file = input.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = e => {
+      htmlText = e.target.result;
+      document.getElementById('html-chosen').classList.add('show');
+      tryEnableButton();
+    };
+    reader.readAsText(file);
+  }
+
+  function tryEnableButton() {
+    document.getElementById('btn-generate').disabled = !(logoDataUrl && htmlText);
+  }
+
+  function generate() {
+    const status = document.getElementById('status-msg');
+    status.className = 'status';
+    status.textContent = '';
+
+    if (!logoDataUrl || !htmlText) {
+      status.className = 'status error';
+      status.textContent = 'Please select both files first.';
+      return;
+    }
+
+    // Use regex to find the logo-mark div and replace its entire contents
+    // This is robust to whitespace/indentation differences
+    const logoMarkRegex = /(<div class="logo-mark">)([\s\S]*?)(<\/div>)/;
+
+    if (!logoMarkRegex.test(htmlText)) {
+      status.className = 'status error';
+      status.textContent = 'Could not find the logo section in the HTML. Make sure you selected the correct iss-opportunity-manager.html file.';
+      return;
+    }
+
+    const imgBlock = `<div class="logo-mark">\n      <img src="${logoDataUrl}" alt="Industrial Service Solutions" height="38" style="display:block;filter:brightness(0) invert(1);" />\n    </div>`;
+    const updated = htmlText.replace(logoMarkRegex, imgBlock);
+
+    // Download
+    const blob = new Blob([updated], { type: 'text/html' });
+    const a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = 'iss-opportunity-manager.html';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(a.href);
+
+    status.className = 'status success';
+    status.textContent = '✅ Done! Replace your old iss-opportunity-manager.html with the downloaded file — your logo is now permanently embedded.';
+  }
+</script>
+</body>
+</html>
